@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <title>Clinic</title>
+</head>
+
+<body>
+    <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
+
+    <script>
+        var liff = window['liff'];
+
+        function showProfile(profile) {
+            document.getElementById('name').innerText = profile.displayName;
+            document.getElementById('image').src = profile.pictureUrl;
+        }
+
+        function sendMessage() {
+            liff.sendMessages({ type: 'text', text: 'test' });
+        }
+
+        function getProfile() {
+            if (liff.isInClient()) {
+                liff.getProfile()
+                    .then(pf => {
+                        showProfile(pf);
+                    })
+                    .catch(err => {
+                        console.log('getProfile error', err);
+                    });
+            } else {
+                console.log('liff.isLoggedIn()', liff.isLoggedIn());
+                if (liff.isLoggedIn()) {
+                    liff
+                        .getProfile()
+                        .then(pf => {
+                            showProfile(pf);
+                        })
+                        .catch(err => {
+                            console.log('getProfile error', err);
+                        });
+                } else {
+                    liff.login();
+                }
+            }
+
+        }
+        liff.init(
+            { liffId: 'xxx' },
+            () => {
+                console.log('OK');
+                getProfile();
+            },
+            () => {
+                console.log('Fail to init LIFF, please run inside LINE only');
+            },
+        );
+    </script>
+
+    <div id="name">xxx</div>
+    <image id="image" />
+
+
+</body>
+
+</html>
